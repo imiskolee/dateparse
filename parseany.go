@@ -5,7 +5,9 @@ package dateparse
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 	"unicode"
 )
@@ -603,7 +605,25 @@ iterRunes:
 
 	case stateDigitDashTOffset:
 		// 2006-01-02T15:04:05+0000
-		return parse("2006-01-02T15:04:05-0700", datestr, loc)
+		t,err := parse("2006-01-02T15:04:05-0700", datestr, loc)
+		if err == nil {
+			return t,err
+		}
+		//hack GMT+8
+		r := regexp.MustCompile("(GMT[\\+\\-])(\\d)$")
+		rs := r.FindStringSubmatch(datestr)
+		if len(rs) == 3 {
+			datestr = datestr[:	strings.Index(datestr,"GMT")] + rs[1] + "0" + rs[2]
+		}
+		t,err = parse("2006-01-02T15:04:05GMT-07", datestr, loc)
+		if err == nil {
+			return t, nil
+		}
+		t,err = parse("2006-01-02T15:04:05GMT-0700", datestr, loc)
+		if err == nil {
+			return t, nil
+		}
+		return parse("2006-01-02T15:04:05GMT-07:00", datestr, loc)
 
 	case stateDigitDashTOffsetColon:
 		// With another +/- time-zone at end
@@ -664,7 +684,11 @@ iterRunes:
 		if err == nil {
 			return t, nil
 		}
-		return parse("2006-01-02 15:04:05 +0000 GMT", datestr, loc)
+		t,err = parse("2006-01-02 15:04:05 +0000 GMT", datestr, loc)
+		if err == nil {
+			return t, nil
+		}
+		return t,nil
 
 	case stateDigitDashWsWsOffsetColonAlpha:
 		// 2015-02-18 00:12:00 +00:00 UTC

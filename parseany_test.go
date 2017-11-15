@@ -471,6 +471,9 @@ func TestParse(t *testing.T) {
 
 	_, err = ParseAny("-1314")
 	assert.NotEqual(t, nil, err)
+	
+	MustParse("2017-11-15T18:00:29GMT+8")
+
 }
 
 func testDidPanic(datestr string) (paniced bool) {
