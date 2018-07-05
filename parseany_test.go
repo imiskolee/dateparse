@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"log"
 )
 
 // Lets test to see how this performs using different Timezones/Locations
@@ -473,7 +474,8 @@ func TestParse(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 	
 	MustParse("2017-11-15T18:00:29GMT+8")
-
+	MustParse("2017-11-09T19:19:12+0800")
+	MustParse("2017-11-09T19:19:12HKT")
 }
 
 func testDidPanic(datestr string) (paniced bool) {

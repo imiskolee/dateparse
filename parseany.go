@@ -545,7 +545,6 @@ iterRunes:
 			break iterRunes
 		}
 	}
-
 	switch state {
 	case stateDigit:
 		// unixy timestamps ish
@@ -609,6 +608,10 @@ iterRunes:
 		if err == nil {
 			return t,err
 		}
+
+
+
+
 		//hack GMT+8
 		r := regexp.MustCompile("(GMT[\\+\\-])(\\d)$")
 		rs := r.FindStringSubmatch(datestr)
@@ -623,7 +626,11 @@ iterRunes:
 		if err == nil {
 			return t, nil
 		}
-		return parse("2006-01-02T15:04:05GMT-07:00", datestr, loc)
+		t,err =  parse("2006-01-02T15:04:05GMT-07:00", datestr, loc)
+		if err == nil {
+			return t, nil
+		}
+		return t,err
 
 	case stateDigitDashTOffsetColon:
 		// With another +/- time-zone at end
@@ -640,7 +647,14 @@ iterRunes:
 	case stateDigitDashT: // starts digit then dash 02-  then T
 		// 2006-01-02T15:04:05.999999
 		// 2006-01-02T15:04:05.999999
-		return parse("2006-01-02T15:04:05", datestr, loc)
+		t,err :=  parse("2006-01-02T15:04:05", datestr, loc)
+		if err == nil {
+			return t,nil
+		}
+		{
+			t,err := parse("2006-01-02T15:04:05MST", datestr, loc)
+			return t,err
+		}
 
 	case stateDigitDashTZDigit:
 		// With a time-zone at end after Z
