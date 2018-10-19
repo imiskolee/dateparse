@@ -120,7 +120,6 @@ func parseTime(datestr string, loc *time.Location) (time.Time, error) {
 		for k,v := range zonemap {
 			if strings.Contains(datestr,k) {
 				datestr = strings.Replace(datestr,k,v,-1)
-				fmt.Println(k,v,datestr)
 			}
 
 		}
