@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"testing"
 	"time"
-
 	"github.com/stretchr/testify/assert"
-	"log"
 )
 
 // Lets test to see how this performs using different Timezones/Locations

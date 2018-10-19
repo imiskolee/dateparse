@@ -116,6 +116,16 @@ func parse(layout, datestr string, loc *time.Location) (time.Time, error) {
 }
 
 func parseTime(datestr string, loc *time.Location) (time.Time, error) {
+	if loc == nil {
+		for k,v := range zonemap {
+			if strings.Contains(datestr,k) {
+				datestr = strings.Replace(datestr,k,v,-1)
+				fmt.Println(k,v,datestr)
+			}
+
+		}
+	}
+
 	state := stateStart
 
 	firstSlash := 0
